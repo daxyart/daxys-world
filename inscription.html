@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daxy's World</title>
-    <link rel="stylesheet" href="inscription.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription — Daxy's World</title>
+  <link rel="stylesheet" href="inscription.css">
 </head>
 <body>
-    <header class="hero">
-        <h1 id="introText">Bienvenue dans Daxy's World</h1>
-        <p>Explorez un monde d'interactions et de créativité.</p>
-    </header>
-<section id="signup" class="signup-section">
-    <h2>Inscrivez-vous 🌟</h2>
-    <p>Rejoignez notre communauté et profitez de contenus exclusifs.</p>
-    <p>La création de compte n’est pas encore disponible sur cette version statique du site.</p>
-</section>
-<section id="loginup" class="loginup-section">
-      Vous avez déjà un compte ?
-      <a href="connexion.html" class="cta-button"> Se connecter</a>
-</section>
-<footer>
-  <p>&copy; 2025 Daxy's World - Tous droits réservés.</p>
-</footer>
+  <header class="hero">
+    <h1>Bienvenue dans Daxy's World</h1>
+    <p>Explorez un monde d'interactions et de créativité.</p>
+  </header>
+  <main>
+    <section id="signup" class="signup-section">
+      <h2>Inscrivez-vous 🌟</h2>
+      <p>Rejoignez notre communauté.</p>
+      <form id="signup-form">
+        <label for="signup-email">Adresse e-mail</label>
+        <input id="signup-email" name="email" type="email" autocomplete="email" required>
+        <label for="signup-password">Mot de passe (au moins 8 caractères)</label>
+        <input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+        <label for="signup-password-confirm">Confirmer le mot de passe</label>
+        <input id="signup-password-confirm" name="password-confirm" type="password" autocomplete="new-password" minlength="8" required>
+        <button type="submit">Créer mon compte</button>
+      </form>
+      <p id="auth-message" role="status" aria-live="polite"></p>
+      <p>Vous avez déjà un compte ? <a href="connexion.html">Se connecter</a></p>
+      <p><a href="index.html">Retour à l'accueil</a></p>
+    </section>
+  </main>
+  <footer><p>&copy; 2025 Daxy's World - Tous droits réservés.</p></footer>
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
