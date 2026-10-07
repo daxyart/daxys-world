@@ -36,7 +36,7 @@ if (!clientConfigured) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: window.location.origin + "/daxys-world/connexion.html" }
+      options: { emailRedirectTo: window.location.origin + "/daxys-world/connexion.html", data: { display_name: String(form.get("display_name")).trim() } }
     });
     button.disabled = false;
     if (error) {
