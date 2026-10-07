@@ -37,3 +37,11 @@ drop policy if exists "Anyone can read forum messages" on public.forum_messages;
 create policy "Anyone can read forum messages" on public.forum_messages for select to anon, authenticated using (true);
 drop policy if exists "Members post as themselves in forum" on public.forum_messages;
 create policy "Members post as themselves in forum" on public.forum_messages for insert to authenticated with check ((select auth.uid()) = sender_id);
+
+-- Expose the author profile relationship to PostgREST for forum previews.
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'forum_messages_sender_profile_fkey' and conrelid = 'public.forum_messages'::regclass) then
+    alter table public.forum_messages add constraint forum_messages_sender_profile_fkey foreign key (sender_id) references public.profiles(id) on delete cascade not valid;
+  end if;
+end $$;
+notify pgrst, 'reload schema';
