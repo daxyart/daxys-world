@@ -1,0 +1,20 @@
+* { box-sizing: border-box; }
+body { min-height: 100vh; margin: 0; display: flex; flex-direction: column; font-family: Arial, sans-serif; color: #25312d; background: #f4f7f5; }
+.hero { padding: 2rem 1rem; text-align: center; color: #fff; background: #287a51; }
+.hero h1 { margin: 0 0 .5rem; }
+main { flex: 1; width: min(100% - 2rem, 720px); margin: 2rem auto; }
+.account-container { padding: clamp(1.25rem, 4vw, 2rem); border-radius: 12px; background: #fff; box-shadow: 0 4px 18px #173d2a18; }
+.account-email { margin-top: 0; overflow-wrap: anywhere; color: #52615a; }
+.account-section { padding: 1.25rem 0; border-top: 1px solid #e4ebe6; }
+.account-section h2 { margin: 0 0 1rem; font-size: 1.2rem; }
+label { display: block; margin: .8rem 0 .35rem; font-weight: 600; }
+input { width: 100%; padding: .8rem; border: 1px solid #bac8bf; border-radius: 6px; font: inherit; }
+button { margin-top: .75rem; padding: .75rem 1rem; border: 0; border-radius: 6px; color: #fff; background: #187447; font: inherit; font-weight: 600; cursor: pointer; }
+button:hover { background: #125d39; }
+button:disabled { opacity: .6; cursor: wait; }
+.hint { margin-bottom: 0; color: #64736a; font-size: .92rem; }
+#account-message { min-height: 1.5em; font-weight: 600; }
+.account-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid #e4ebe6; }
+.account-actions a { color: #17653f; }
+.secondary-button { background: #59665f; }
+footer { padding: 1rem; text-align: center; color: #fff; background: #246b47; }
