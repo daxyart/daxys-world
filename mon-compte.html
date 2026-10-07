@@ -9,15 +9,24 @@
 </head>
 <body>
   <header class="hero">
-    <h1>Mon compte</h1>
-    <p>Personnalisez votre profil et partagez vos publications avec la communauté.</p>
+    <nav class="hero-nav" aria-label="Navigation de l’espace membre">
+      <a class="brand" href="index.html"><span class="brand-mark">D</span><span>Daxy’s <em>World</em></span></a>
+      <div class="hero-links"><a href="index.html">Accueil</a><a href="publications.html">Communauté</a></div>
+    </nav>
+    <div class="hero-copy">
+      <p class="eyebrow">ESPACE MEMBRE</p>
+      <h1>Mon compte<span class="title-dot">.</span></h1>
+      <p>Votre profil, vos idées et vos publications réunis au même endroit.</p>
+    </div>
   </header>
   <main>
     <div class="account-container" id="account-panel" hidden>
-      <p class="account-email">Connecté avec <strong id="current-email"></strong></p>
+      <p class="account-email"><span class="status-dot" aria-hidden="true"></span><span>Connecté avec</span><strong id="current-email"></strong></p>
 
       <section class="account-section">
+        <p class="section-kicker">01 / IDENTITÉ</p>
         <h2>Mon profil public</h2>
+        <p class="section-intro">Présentez-vous à la communauté Daxy’s World.</p>
         <div class="avatar-row">
           <img id="avatar-preview" class="avatar-preview" alt="Aperçu de votre photo de profil" src="">
           <div><label for="avatar-file">Photo de profil</label>
@@ -35,7 +44,9 @@
       </section>
 
       <section class="account-section">
-        <h2>Publier</h2>
+        <p class="section-kicker">02 / PARTAGE</p>
+        <h2>Une idée à partager ?</h2>
+        <p class="section-intro">Publiez un message ou une image pour tout le monde.</p>
         <form id="post-form">
           <label for="post-body">Votre texte</label>
           <textarea id="post-body" maxlength="1000" rows="5" placeholder="Que souhaitez-vous partager ?" aria-describedby="post-hint"></textarea>
@@ -47,13 +58,14 @@
       </section>
 
       <section class="account-section">
+        <p class="section-kicker">03 / MON ESPACE</p>
         <h2>Mes publications</h2>
         <div id="my-posts" class="post-list" aria-live="polite"></div>
         <a class="text-link" href="publications.html">Voir toutes les publications</a>
       </section>
 
       <details class="account-section account-security">
-        <summary>Connexion et sécurité</summary>
+        <summary><span><span class="section-kicker">04 / PARAMÈTRES</span><strong>Connexion et sécurité</strong></span><span class="summary-mark" aria-hidden="true">＋</span></summary>
         <form id="email-form">
           <label for="new-email">Nouvelle adresse e-mail</label>
           <input id="new-email" name="email" type="email" autocomplete="email" required>
