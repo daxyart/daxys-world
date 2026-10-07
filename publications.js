@@ -22,11 +22,17 @@ function addPost(post, profile) {
   const name = document.createElement("strong");
   name.textContent = profile?.display_name || "Membre";
   author.append(name);
+  const followerCount = document.createElement("span");
+  followerCount.className = "follower-count";
+  followerCount.dataset.authorId = post.author_id;
+  followerCount.textContent = `${followerCounts.get(post.author_id) || 0} abonnés`;
+  author.append(followerCount);
   if (session?.user && session.user.id !== post.author_id) {
     const followButton = document.createElement("button");
     followButton.type = "button";
     followButton.className = "follow-button";
-    followButton.textContent = followedIds.has(post.author_id) ? "Suivi" : "Suivre";
+    followButton.textContent = followedIds.has(post.author_id) ? "Abonné" : "Suivre";
+    followButton.dataset.authorId = post.author_id;
     if (followedIds.has(post.author_id)) followButton.classList.add("is-following");
     followButton.addEventListener("click", async () => {
       followButton.disabled = true;
@@ -41,9 +47,14 @@ function addPost(post, profile) {
       }
       if (alreadyFollowing) followedIds.delete(post.author_id);
       else followedIds.add(post.author_id);
-      followButton.textContent = alreadyFollowing ? "Suivre" : "Suivi";
-      followButton.classList.toggle("is-following", !alreadyFollowing);
-      followButton.disabled = false;
+      const count = Math.max(0, (followerCounts.get(post.author_id) || 0) + (alreadyFollowing ? -1 : 1));
+      followerCounts.set(post.author_id, count);
+      document.querySelectorAll(`.follower-count[data-author-id="${post.author_id}"]`).forEach((label) => { label.textContent = `${count} abonnés`; });
+      document.querySelectorAll(`.follow-button[data-author-id="${post.author_id}"]`).forEach((button) => {
+        button.textContent = alreadyFollowing ? "Suivre" : "Abonné";
+        button.classList.toggle("is-following", !alreadyFollowing);
+        button.disabled = false;
+      });
       status.textContent = alreadyFollowing ? "Vous ne suivez plus ce profil." : "Vous suivez maintenant ce profil.";
     });
     author.append(followButton);
@@ -77,6 +88,7 @@ function addPost(post, profile) {
 }
 
 let followedIds = new Set();
+let followerCounts = new Map();
 if (session?.user) {
   const { data: follows } = await supabase.from("follows").select("following_id").eq("follower_id", session.user.id);
   followedIds = new Set((follows || []).map((row) => row.following_id));
@@ -89,6 +101,8 @@ if (error) {
 } else {
   const authorIds = [...new Set(posts.map((post) => post.author_id))];
   const { data: profiles, error: profilesError } = await supabase.from("profiles").select("id,display_name,bio,avatar_url").in("id", authorIds);
+  const { data: followerRows } = await supabase.from("follows").select("following_id").in("following_id", authorIds);
+  followerCounts = new Map(authorIds.map((id) => [id, (followerRows || []).filter((row) => row.following_id === id).length]));
   if (profilesError) status.textContent = "Impossible de charger les profils des auteurs.";
   else {
     status.textContent = "";

@@ -31,6 +31,8 @@ button:disabled { opacity: .6; cursor: wait; }
 .post-author time { margin-left: auto; color: #64736a; font-size: .85rem; }
 .follow-button { margin: .2rem 0 .2rem auto; padding: .48rem .8rem; font-size: .8rem; }
 .follow-button.is-following { color: #286347; background: #e9f4ed; }
+.follower-count { color: #718078; font-size: .78rem; white-space: nowrap; }
+.follow-button.is-following:hover { background: #dcece1; }
 .post-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; }
 .post-image { display: block; width: 100%; max-height: 540px; object-fit: contain; border-radius: 8px; background: #edf2ee; }
 .delete-post { background: #8b3030; }

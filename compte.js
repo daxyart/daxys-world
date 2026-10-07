@@ -184,15 +184,30 @@ async function loadMyPosts(userId) {
   for (const post of posts) host.append(renderPost(post, profile, true));
 }
 
-async function loadMyFollows(userId) {
-  const host = document.querySelector("#my-follows");
+let activeNetworkView = "following";
+async function loadMyNetwork(userId, view = activeNetworkView) {
+  activeNetworkView = view;
+  const host = document.querySelector("#my-network-list");
   host.replaceChildren();
-  const { data: follows, error } = await supabase.from("follows").select("following_id").eq("follower_id", userId).order("created_at", { ascending: false });
-  if (error) { host.textContent = "Impossible de charger vos abonnements."; return; }
-  if (!follows.length) { host.textContent = "Vous ne suivez encore aucun profil. Retrouvez des membres dans la communauté."; return; }
-  const ids = follows.map((item) => item.following_id);
+  const { data: relationships, error } = await supabase.from("follows").select("follower_id,following_id,created_at").eq(view === "following" ? "follower_id" : "following_id", userId).order("created_at", { ascending: false });
+  if (error) { host.textContent = "Impossible de charger votre réseau pour le moment."; return; }
+  document.querySelectorAll("[data-network-view]").forEach((button) => {
+    const selected = button.dataset.networkView === view;
+    if (button.getAttribute("role") === "tab") {
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", String(selected));
+    }
+  });
+  const ids = relationships.map((item) => view === "following" ? item.following_id : item.follower_id);
+  document.querySelector("#my-network-list").dataset.view = view;
+  if (!ids.length) {
+    host.textContent = view === "following" ? "Vous ne suivez encore aucun profil. Découvrez les membres dans la communauté." : "Vous n’avez pas encore d’abonné.";
+    return;
+  }
   const { data: profiles, error: profilesError } = await supabase.from("profiles").select("id,display_name,avatar_url").in("id", ids);
-  if (profilesError) { host.textContent = "Impossible de charger les profils suivis."; return; }
+  if (profilesError) { host.textContent = "Impossible de charger les profils."; return; }
+  const { data: ownFollowing } = await supabase.from("follows").select("following_id").eq("follower_id", userId);
+  const ownFollowingIds = new Set((ownFollowing || []).map((row) => row.following_id));
   const byId = new Map((profiles || []).map((profile) => [profile.id, profile]));
   for (const id of ids) {
     const profile = byId.get(id);
@@ -205,18 +220,41 @@ async function loadMyFollows(userId) {
     item.append(name);
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "secondary-button";
-    button.textContent = "Ne plus suivre";
+    button.className = "network-action";
+    const alreadyFollowing = view === "following" || ownFollowingIds.has(id);
+    button.textContent = alreadyFollowing ? "Abonné" : "Suivre";
+    if (alreadyFollowing) button.classList.add("is-following");
     button.addEventListener("click", async () => {
       button.disabled = true;
-      const { error: unfollowError } = await supabase.from("follows").delete().eq("follower_id", userId).eq("following_id", id);
-      if (unfollowError) { button.disabled = false; showMessage("Impossible de modifier cet abonnement.", true); }
-      else { showMessage("Vous ne suivez plus ce profil."); await loadMyFollows(userId); }
+      const result = alreadyFollowing
+        ? await supabase.from("follows").delete().eq("follower_id", userId).eq("following_id", id)
+        : await supabase.from("follows").insert({ follower_id: userId, following_id: id });
+      if (result.error) { button.disabled = false; showMessage("Impossible de modifier cet abonnement.", true); }
+      else {
+        showMessage(alreadyFollowing ? "Vous ne suivez plus ce profil." : "Vous suivez maintenant ce profil.");
+        await loadNetworkStats(userId);
+        await loadMyNetwork(userId, view);
+      }
     });
     item.append(button);
     host.append(item);
   }
 }
+
+async function loadNetworkStats(userId) {
+  const [followersResult, followingResult] = await Promise.all([
+    supabase.from("follows").select("follower_id", { count: "exact", head: true }).eq("following_id", userId),
+    supabase.from("follows").select("following_id", { count: "exact", head: true }).eq("follower_id", userId),
+  ]);
+  document.querySelector("#followers-count").textContent = String(followersResult.count ?? 0);
+  document.querySelector("#following-count").textContent = String(followingResult.count ?? 0);
+}
+
+document.querySelectorAll("[data-network-view]").forEach((button) => {
+  button.addEventListener("click", () => {
+    if (currentUser) loadMyNetwork(currentUser.id, button.dataset.networkView);
+  });
+});
 
 const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 if (sessionError || !session) {
@@ -225,12 +263,12 @@ if (sessionError || !session) {
   currentUser = session.user;
   loadingPanel.hidden = true;
   accountPanel.hidden = false;
-  document.querySelector("#current-email").textContent = currentUser.email ?? "";
   document.querySelector("#new-email").value = currentUser.email ?? "";
 
   const { data: profile, error: profileError } = await supabase.from("profiles").select("id,display_name,bio,avatar_url").eq("id", currentUser.id).maybeSingle();
   if (profileError) showMessage("Activez la configuration Supabase des profils et publications pour utiliser ces fonctions.", true);
   document.querySelector("#display-name").value = profile?.display_name ?? currentUser.user_metadata?.display_name ?? "";
+  document.querySelector("#current-display-name").textContent = document.querySelector("#display-name").value || "Mon profil";
   document.querySelector("#profile-bio").value = profile?.bio ?? "";
   const existingAvatar = profile?.avatar_url ?? currentUser.user_metadata?.avatar_url ?? "";
   if (existingAvatar) avatarPreview.src = existingAvatar;
@@ -259,6 +297,7 @@ if (sessionError || !session) {
       if (error) throw error;
       const { error: metadataError } = await supabase.auth.updateUser({ data: { display_name: displayName, bio, avatar_url: avatarUrl } });
       if (metadataError) throw metadataError;
+      document.querySelector("#current-display-name").textContent = displayName || "Mon profil";
       showMessage("Votre profil a été mis à jour.");
       if (avatarUrl) avatarPreview.src = avatarUrl;
       document.querySelector("#avatar-file").value = "";
@@ -321,5 +360,6 @@ if (sessionError || !session) {
   });
 
   await loadMyPosts(currentUser.id);
-  await loadMyFollows(currentUser.id);
+  await loadNetworkStats(currentUser.id);
+  await loadMyNetwork(currentUser.id, activeNetworkView);
 }
