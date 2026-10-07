@@ -49,8 +49,8 @@ main { flex: 1; width: min(100% - 2rem, 1120px); margin: -1.45rem auto 4rem; pos
 .profile-stats button:hover { transform: none; color: var(--ink); background: #f4efe5; box-shadow: none; }
 .profile-stats strong { color: var(--ink); font-size: .96rem; }
 .account-menu { grid-column: 1 / -1; position: sticky; top: .5rem; z-index: 5; display: flex; flex-wrap: wrap; gap: .45rem; padding: .55rem; border: 1px solid #e5ddcf; border-radius: 12px; background: #fffdf8ed; box-shadow: 0 8px 22px #17233412; backdrop-filter: blur(12px); }
-.account-menu a { padding: .62rem .85rem; border-radius: 8px; color: #596477; font-size: .84rem; font-weight: 700; text-decoration: none; transition: color .15s ease, background .15s ease; }
-.account-menu a:hover { color: #172334; background: #f3ecdf; }
+.account-menu button { padding: .62rem .85rem; border: 0; border-radius: 8px; color: #596477; background: transparent; font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer; transition: color .15s ease, background .15s ease; }
+.account-menu button:hover, .account-menu button[aria-current="page"] { color: #172334; background: #f3ecdf; }
 #account-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 1rem; }
 .account-section { min-width: 0; padding: 1.45rem; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: 0 5px 16px #2d35410a; }
 .account-section:nth-of-type(1), .account-security, #account-message, .account-actions { grid-column: 1 / -1; }

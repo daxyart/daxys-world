@@ -185,6 +185,23 @@ async function loadMyPosts(userId) {
 }
 
 let activeNetworkView = "following";
+function showAccountView(view) {
+  document.querySelectorAll("[data-account-view]").forEach((section) => {
+    section.hidden = section.dataset.accountView !== view;
+  });
+  document.querySelectorAll("[data-open-view]").forEach((button) => {
+    if (button.dataset.openView === view) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  if (view === "security") document.querySelector("#account-security").open = true;
+  if (view === "posts" && currentUser) loadMyPosts(currentUser.id);
+  if (view === "network" && currentUser) loadMyNetwork(currentUser.id, activeNetworkView);
+}
+
+document.querySelectorAll("[data-open-view]").forEach((button) => {
+  button.addEventListener("click", () => showAccountView(button.dataset.openView));
+});
+
 async function loadMyNetwork(userId, view = activeNetworkView) {
   activeNetworkView = view;
   const host = document.querySelector("#my-network-list");
@@ -252,9 +269,31 @@ async function loadNetworkStats(userId) {
 
 document.querySelectorAll("[data-network-view]").forEach((button) => {
   button.addEventListener("click", () => {
-    if (currentUser) loadMyNetwork(currentUser.id, button.dataset.networkView);
+    if (currentUser) {
+      if (!button.matches('[role="tab"]')) showAccountView("network");
+      loadMyNetwork(currentUser.id, button.dataset.networkView);
+    }
   });
 });
+
+function explainPostError(error) {
+  const detail = String(error?.message || "");
+  const code = String(error?.code || "");
+  console.error("Échec de publication", { code, message: detail });
+  if (code === "42501" || /row-level security|permission denied|not allowed/i.test(detail)) {
+    return "Supabase a refusé l’enregistrement (droits de publication). Vérifiez les règles de la table posts et du stockage des images.";
+  }
+  if (code === "PGRST204" || /schema cache|column .*visibility|visibility.*column/i.test(detail)) {
+    return "La configuration de visibilité des publications manque dans Supabase. Appliquez le fichier supabase/account-visibility-follows.sql.";
+  }
+  if (/bucket|storage|upload/i.test(detail)) {
+    return "L’image n’a pas pu être envoyée au stockage Supabase. Vérifiez les buckets public-content et private-posts ainsi que leurs autorisations.";
+  }
+  if (code === "23514" || /posts_have_content/i.test(detail)) {
+    return "Ajoutez du texte ou une image avant de publier.";
+  }
+  return detail ? `Publication impossible : ${detail.slice(0, 240)}` : "La publication a échoué. Réessayez.";
+}
 
 const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 if (sessionError || !session) {
@@ -325,7 +364,7 @@ if (sessionError || !session) {
       showMessage("Votre publication est en ligne.");
       await loadMyPosts(currentUser.id);
     } catch (error) {
-      showMessage(error.message?.includes("posts") || error.message?.includes("Bucket") ? "La configuration Supabase des publications n’est pas encore activée." : "La publication a échoué. Réessayez.", true);
+      showMessage(explainPostError(error), true);
     } finally { button.disabled = false; }
   });
 
