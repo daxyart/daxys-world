@@ -3,6 +3,7 @@ import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./auth-config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const BUCKET = "public-content";
+const PRIVATE_BUCKET = "private-posts";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 const loadingPanel = document.querySelector("#loading-panel");
@@ -28,15 +29,15 @@ function imagePath(userId, file, prefix) {
   return `${userId}/${prefix}-${crypto.randomUUID()}.${extension}`;
 }
 
-async function uploadImage(userId, file, prefix) {
+async function uploadImage(userId, file, prefix, bucket = BUCKET) {
   const path = imagePath(userId, file, prefix);
-  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
     contentType: file.type,
     cacheControl: "3600",
     upsert: false,
   });
   if (error) throw error;
-  return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  return bucket === PRIVATE_BUCKET ? path : supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
 function imageElement(url, alt, className) {
@@ -62,13 +63,25 @@ function renderPost(post, profile, canDelete = false) {
   date.textContent = new Date(post.created_at).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
   author.append(date);
   card.append(author);
+  const visibility = document.createElement("span");
+  visibility.className = "post-visibility";
+  visibility.textContent = post.visibility === "private" ? "Visible par vous uniquement" : "Visible par tout le monde";
+  card.append(visibility);
   if (post.body) {
     const body = document.createElement("p");
     body.className = "post-body";
     body.textContent = post.body;
     card.append(body);
   }
-  if (post.image_url) card.append(imageElement(post.image_url, "Image publiée", "post-image"));
+  if (post.image_url) {
+    const image = imageElement("", "Image publiée", "post-image");
+    card.append(image);
+    if (post.visibility === "private") {
+      supabase.storage.from(PRIVATE_BUCKET).createSignedUrl(post.image_url, 300).then(({ data }) => {
+        if (data?.signedUrl) image.src = data.signedUrl;
+      });
+    } else image.src = post.image_url;
+  }
   if (canDelete) {
     const editButton = document.createElement("button");
     editButton.type = "button";
@@ -91,6 +104,48 @@ function renderPost(post, profile, canDelete = false) {
       }
     });
     card.append(editButton);
+    const visibilityButton = document.createElement("button");
+    visibilityButton.type = "button";
+    visibilityButton.className = "edit-post";
+    visibilityButton.textContent = post.visibility === "private" ? "Rendre visible par tous" : "Rendre privé";
+    visibilityButton.addEventListener("click", async () => {
+      visibilityButton.disabled = true;
+      const nextVisibility = post.visibility === "private" ? "public" : "private";
+      let nextImageUrl = post.image_url;
+      let movedFile = null;
+      try {
+        if (post.image_url) {
+          const fromPrivate = post.visibility === "private";
+          const fromBucket = fromPrivate ? PRIVATE_BUCKET : BUCKET;
+          const toBucket = nextVisibility === "private" ? PRIVATE_BUCKET : BUCKET;
+          if (fromPrivate) movedFile = { bucket: fromBucket, path: post.image_url };
+          else {
+            const marker = "/storage/v1/object/public/public-content/";
+            const path = decodeURIComponent(new URL(post.image_url).pathname.split(marker)[1] || "");
+            if (!path) throw new Error("image_path_missing");
+            movedFile = { bucket: fromBucket, path };
+          }
+          const { data: fileData, error: downloadError } = await supabase.storage.from(fromBucket).download(movedFile.path);
+          if (downloadError) throw downloadError;
+          const extension = movedFile.path.split(".").pop() || "bin";
+          const nextPath = `${currentUser.id}/post-${crypto.randomUUID()}.${extension}`;
+          const { error: uploadError } = await supabase.storage.from(toBucket).upload(nextPath, fileData, { contentType: fileData.type || "application/octet-stream", upsert: false });
+          if (uploadError) throw uploadError;
+          nextImageUrl = nextVisibility === "private" ? nextPath : supabase.storage.from(BUCKET).getPublicUrl(nextPath).data.publicUrl;
+          movedFile = { ...movedFile, nextBucket: toBucket, nextPath };
+        }
+        const { error } = await supabase.from("posts").update({ visibility: nextVisibility, image_url: nextImageUrl }).eq("id", post.id);
+        if (error) throw error;
+        if (movedFile) await supabase.storage.from(movedFile.bucket).remove([movedFile.path]);
+        showMessage(nextVisibility === "private" ? "Cette publication est maintenant privée." : "Cette publication est maintenant visible par tous.");
+        await loadMyPosts(currentUser.id);
+      } catch (error) {
+        if (movedFile?.nextPath) await supabase.storage.from(movedFile.nextBucket).remove([movedFile.nextPath]);
+        visibilityButton.disabled = false;
+        showMessage("Le changement de visibilité a échoué. Vérifiez la configuration Supabase puis réessayez.", true);
+      }
+    });
+    card.append(visibilityButton);
     const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "delete-post";
@@ -116,7 +171,7 @@ let currentUser;
 async function loadMyPosts(userId) {
   const host = document.querySelector("#my-posts");
   host.replaceChildren();
-  const { data: posts, error } = await supabase.from("posts").select("id,author_id,body,image_url,created_at").eq("author_id", userId).order("created_at", { ascending: false }).limit(50);
+  const { data: posts, error } = await supabase.from("posts").select("id,author_id,body,image_url,visibility,created_at").eq("author_id", userId).order("created_at", { ascending: false }).limit(50);
   if (error) {
     host.textContent = "Impossible de charger vos publications. Appliquez d’abord la configuration Supabase.";
     return;
@@ -127,6 +182,40 @@ async function loadMyPosts(userId) {
   }
   const { data: profile } = await supabase.from("profiles").select("id,display_name,avatar_url").eq("id", userId).maybeSingle();
   for (const post of posts) host.append(renderPost(post, profile, true));
+}
+
+async function loadMyFollows(userId) {
+  const host = document.querySelector("#my-follows");
+  host.replaceChildren();
+  const { data: follows, error } = await supabase.from("follows").select("following_id").eq("follower_id", userId).order("created_at", { ascending: false });
+  if (error) { host.textContent = "Impossible de charger vos abonnements."; return; }
+  if (!follows.length) { host.textContent = "Vous ne suivez encore aucun profil. Retrouvez des membres dans la communauté."; return; }
+  const ids = follows.map((item) => item.following_id);
+  const { data: profiles, error: profilesError } = await supabase.from("profiles").select("id,display_name,avatar_url").in("id", ids);
+  if (profilesError) { host.textContent = "Impossible de charger les profils suivis."; return; }
+  const byId = new Map((profiles || []).map((profile) => [profile.id, profile]));
+  for (const id of ids) {
+    const profile = byId.get(id);
+    if (!profile) continue;
+    const item = document.createElement("div");
+    item.className = "follow-card";
+    if (profile.avatar_url) item.append(imageElement(profile.avatar_url, "", "post-avatar"));
+    const name = document.createElement("strong");
+    name.textContent = profile.display_name || "Membre";
+    item.append(name);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary-button";
+    button.textContent = "Ne plus suivre";
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      const { error: unfollowError } = await supabase.from("follows").delete().eq("follower_id", userId).eq("following_id", id);
+      if (unfollowError) { button.disabled = false; showMessage("Impossible de modifier cet abonnement.", true); }
+      else { showMessage("Vous ne suivez plus ce profil."); await loadMyFollows(userId); }
+    });
+    item.append(button);
+    host.append(item);
+  }
 }
 
 const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -189,8 +278,9 @@ if (sessionError || !session) {
     if (!body && !file) return showMessage("Ajoutez un texte ou une image avant de publier.", true);
     button.disabled = true;
     try {
-      const imageUrl = file ? await uploadImage(currentUser.id, file, "post") : null;
-      const { error } = await supabase.from("posts").insert({ author_id: currentUser.id, body, image_url: imageUrl });
+      const visibility = document.querySelector("#post-visibility").value;
+      const imageUrl = file ? await uploadImage(currentUser.id, file, "post", visibility === "private" ? PRIVATE_BUCKET : BUCKET) : null;
+      const { error } = await supabase.from("posts").insert({ author_id: currentUser.id, body, image_url: imageUrl, visibility });
       if (error) throw error;
       event.currentTarget.reset();
       showMessage("Votre publication est en ligne.");
@@ -231,4 +321,5 @@ if (sessionError || !session) {
   });
 
   await loadMyPosts(currentUser.id);
+  await loadMyFollows(currentUser.id);
 }

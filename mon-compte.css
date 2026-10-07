@@ -51,7 +51,8 @@ main { flex: 1; width: min(100% - 2rem, 1120px); margin: -1.45rem auto 4rem; pos
 .section-intro { margin: .35rem 0 1.2rem; color: var(--muted); font-size: .91rem; line-height: 1.5; }
 label, summary { display: block; margin: .9rem 0 .4rem; color: #344052; font-size: .85rem; font-weight: 700; }
 input, textarea { width: 100%; padding: .82rem .9rem; border: 1px solid #d8d6d0; border-radius: 9px; outline: none; color: var(--ink); background: #fff; font: inherit; font-size: .94rem; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
-input:focus, textarea:focus { border-color: #b49661; box-shadow: 0 0 0 3px #bd985c24; background: #fffefa; }
+select { width: 100%; padding: .82rem .9rem; border: 1px solid #d8d6d0; border-radius: 9px; outline: none; color: var(--ink); background: #fff; font: inherit; font-size: .94rem; }
+input:focus, textarea:focus, select:focus { border-color: #b49661; box-shadow: 0 0 0 3px #bd985c24; background: #fffefa; }
 textarea { resize: vertical; line-height: 1.55; }
 input[type=file] { padding: .55rem; color: #687386; background: #fff; font-size: .84rem; }
 input[type=file]::file-selector-button { margin-right: .8rem; padding: .56rem .8rem; border: 1px solid #e5dccb; border-radius: 7px; color: #5f4d31; background: #f7f1e6; font: inherit; font-weight: 600; cursor: pointer; }
@@ -81,6 +82,12 @@ button:disabled { opacity: .55; cursor: wait; transform: none; }
 .edit-post { margin-right: .4rem; }
 .delete-post { border-color: #caa8a5; background: linear-gradient(135deg, #73424a, #59343d); }
 .delete-post:hover { background: linear-gradient(135deg, #87525b, #684047); }
+.post-visibility { display: inline-block; margin: .2rem 0 .5rem; padding: .25rem .55rem; border: 1px solid #e7dcc6; border-radius: 999px; color: #71592f; background: #fbf6eb; font-size: .76rem; font-weight: 700; }
+.follow-button { margin: .2rem 0 .2rem auto; padding: .48rem .8rem; font-size: .8rem; }
+.follow-button.is-following { color: #55452c; background: #f5eddd; box-shadow: none; }
+.follow-button.is-following:hover { background: #eadfc9; }
+.follow-card { display: flex; align-items: center; gap: .75rem; padding: .8rem; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+.follow-card strong { flex: 1; }
 .account-security { padding: 0 1.45rem; }
 .account-security summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 74px; margin: 0; list-style: none; cursor: pointer; }
 .account-security summary::-webkit-details-marker { display: none; }

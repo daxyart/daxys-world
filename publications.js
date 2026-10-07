@@ -4,6 +4,7 @@ import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./auth-config.js";
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const feed = document.querySelector("#public-feed");
 const status = document.querySelector("#feed-status");
+const { data: { session } } = await supabase.auth.getSession();
 
 function addPost(post, profile) {
   const card = document.createElement("article");
@@ -21,6 +22,32 @@ function addPost(post, profile) {
   const name = document.createElement("strong");
   name.textContent = profile?.display_name || "Membre";
   author.append(name);
+  if (session?.user && session.user.id !== post.author_id) {
+    const followButton = document.createElement("button");
+    followButton.type = "button";
+    followButton.className = "follow-button";
+    followButton.textContent = followedIds.has(post.author_id) ? "Suivi" : "Suivre";
+    if (followedIds.has(post.author_id)) followButton.classList.add("is-following");
+    followButton.addEventListener("click", async () => {
+      followButton.disabled = true;
+      const alreadyFollowing = followedIds.has(post.author_id);
+      const result = alreadyFollowing
+        ? await supabase.from("follows").delete().eq("follower_id", session.user.id).eq("following_id", post.author_id)
+        : await supabase.from("follows").insert({ follower_id: session.user.id, following_id: post.author_id });
+      if (result.error) {
+        followButton.disabled = false;
+        status.textContent = "Impossible de modifier l’abonnement. Réessayez.";
+        return;
+      }
+      if (alreadyFollowing) followedIds.delete(post.author_id);
+      else followedIds.add(post.author_id);
+      followButton.textContent = alreadyFollowing ? "Suivre" : "Suivi";
+      followButton.classList.toggle("is-following", !alreadyFollowing);
+      followButton.disabled = false;
+      status.textContent = alreadyFollowing ? "Vous ne suivez plus ce profil." : "Vous suivez maintenant ce profil.";
+    });
+    author.append(followButton);
+  }
   const date = document.createElement("time");
   date.dateTime = post.created_at;
   date.textContent = new Date(post.created_at).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
@@ -49,7 +76,12 @@ function addPost(post, profile) {
   feed.append(card);
 }
 
-const { data: posts, error } = await supabase.from("posts").select("id,author_id,body,image_url,created_at").order("created_at", { ascending: false }).limit(50);
+let followedIds = new Set();
+if (session?.user) {
+  const { data: follows } = await supabase.from("follows").select("following_id").eq("follower_id", session.user.id);
+  followedIds = new Set((follows || []).map((row) => row.following_id));
+}
+const { data: posts, error } = await supabase.from("posts").select("id,author_id,body,image_url,visibility,created_at").eq("visibility", "public").order("created_at", { ascending: false }).limit(50);
 if (error) {
   status.textContent = "Les publications seront disponibles après l’activation de la configuration Supabase.";
 } else if (!posts.length) {

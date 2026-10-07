@@ -52,7 +52,12 @@
           <textarea id="post-body" maxlength="1000" rows="5" placeholder="Que souhaitez-vous partager ?" aria-describedby="post-hint"></textarea>
           <label for="post-image">Ajouter une image (facultatif)</label>
           <input id="post-image" type="file" accept="image/png,image/jpeg,image/webp">
-          <p class="hint" id="post-hint">Texte jusqu’à 1 000 caractères et une image de 5 Mo maximum. Les publications sont visibles par tous.</p>
+          <label for="post-visibility">Qui peut voir cette publication ?</label>
+          <select id="post-visibility" name="visibility" aria-describedby="post-hint">
+            <option value="public">Tout le monde</option>
+            <option value="private">Moi uniquement</option>
+          </select>
+          <p class="hint" id="post-hint">Texte jusqu’à 1 000 caractères et image de 5 Mo maximum. Vous pourrez changer ce choix plus tard.</p>
           <button type="submit">Publier</button>
         </form>
       </section>
@@ -64,8 +69,15 @@
         <a class="text-link" href="publications.html">Voir toutes les publications</a>
       </section>
 
+      <section class="account-section">
+        <p class="section-kicker">04 / COMMUNAUTÉ</p>
+        <h2>Profils suivis</h2>
+        <p class="section-intro">Retrouvez les membres que vous suivez et gérez vos abonnements.</p>
+        <div id="my-follows" class="post-list" aria-live="polite"></div>
+      </section>
+
       <details class="account-section account-security">
-        <summary><span><span class="section-kicker">04 / PARAMÈTRES</span><strong>Connexion et sécurité</strong></span><span class="summary-mark" aria-hidden="true">＋</span></summary>
+        <summary><span><span class="section-kicker">05 / PARAMÈTRES</span><strong>Connexion et sécurité</strong></span><span class="summary-mark" aria-hidden="true">＋</span></summary>
         <form id="email-form">
           <label for="new-email">Nouvelle adresse e-mail</label>
           <input id="new-email" name="email" type="email" autocomplete="email" required>
