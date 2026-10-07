@@ -170,3 +170,36 @@ body .login-container .login-signup .cta-button {
   line-height: 1.2;
   white-space: nowrap;
 }
+
+
+/* Le lien de création de compte reste toujours sous son texte d'introduction. */
+body .login-container p.login-signup {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  justify-items: center !important;
+  gap: 12px !important;
+  text-align: center !important;
+}
+
+body .login-container p.login-signup > span {
+  display: block !important;
+  grid-column: 1 !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+
+body .login-container p.login-signup > a.cta-button {
+  position: static !important;
+  display: inline-flex !important;
+  grid-column: 1 !important;
+  justify-self: center !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  float: none !important;
+  transform: none !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  box-sizing: border-box !important;
+}
