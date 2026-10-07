@@ -10,6 +10,8 @@ const loadingPanel = document.querySelector("#loading-panel");
 const accountPanel = document.querySelector("#account-panel");
 const message = document.querySelector("#account-message");
 const avatarPreview = document.querySelector("#avatar-preview");
+const defaultAccountTitle = document.querySelector("#account-title-default");
+const accountProfileHeader = document.querySelector("#account-profile-header");
 
 function showMessage(text, isError = false) {
   message.textContent = text;
@@ -307,12 +309,16 @@ if (sessionError || !session) {
   currentUser = session.user;
   loadingPanel.hidden = true;
   accountPanel.hidden = false;
+  defaultAccountTitle.hidden = true;
+  accountProfileHeader.hidden = false;
   document.querySelector("#new-email").value = currentUser.email ?? "";
 
   const { data: profile, error: profileError } = await supabase.from("profiles").select("id,display_name,bio,avatar_url").eq("id", currentUser.id).maybeSingle();
   if (profileError) showMessage("Activez la configuration Supabase des profils et publications pour utiliser ces fonctions.", true);
   document.querySelector("#display-name").value = profile?.display_name ?? currentUser.user_metadata?.display_name ?? "";
-  document.querySelector("#current-display-name").textContent = document.querySelector("#display-name").value || "Mon profil";
+  const initialDisplayName = document.querySelector("#display-name").value || "Mon profil";
+  document.querySelector("#current-display-name").textContent = initialDisplayName;
+  avatarPreview.alt = `Photo de profil de ${initialDisplayName}`;
   document.querySelector("#profile-bio").value = profile?.bio ?? "";
   const existingAvatar = profile?.avatar_url ?? currentUser.user_metadata?.avatar_url ?? "";
   if (existingAvatar) avatarPreview.src = existingAvatar;
@@ -342,6 +348,7 @@ if (sessionError || !session) {
       const { error: metadataError } = await supabase.auth.updateUser({ data: { display_name: displayName, bio, avatar_url: avatarUrl } });
       if (metadataError) throw metadataError;
       document.querySelector("#current-display-name").textContent = displayName || "Mon profil";
+      avatarPreview.alt = `Photo de profil de ${displayName || "Mon profil"}`;
       showMessage("Votre profil a été mis à jour.");
       if (avatarUrl) avatarPreview.src = avatarUrl;
       document.querySelector("#avatar-file").value = "";

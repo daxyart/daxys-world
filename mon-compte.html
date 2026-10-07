@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Gérez votre profil et vos publications sur Daxy's World.">
   <title>Mon compte — Daxy's World</title>
-  <link rel="stylesheet" href="mon-compte.css?v=network-directory-responsive-20261008">
+  <link rel="stylesheet" href="mon-compte.css?v=hero-profile-20261008">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="elegant-theme-v2.css">
 </head>
@@ -15,21 +15,24 @@
       <a class="brand" href="index.html"><span class="brand-mark">D</span><span>Daxy’s <em>World</em></span></a>
       <div class="hero-links"><a href="index.html">Accueil</a><a href="publications.html">Communauté</a></div>
     </nav>
-    <div class="hero-copy">
+    <div class="hero-copy" id="account-title-default">
       <p class="eyebrow">ESPACE MEMBRE</p>
       <h1>Mon compte<span class="title-dot">.</span></h1>
       <p>Votre profil, vos idées et vos publications réunis au même endroit.</p>
     </div>
+    <div class="hero-copy account-profile-header" id="account-profile-header" hidden>
+      <p class="eyebrow">ESPACE MEMBRE</p>
+      <img id="avatar-preview" class="profile-header-avatar" alt="Photo de profil" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23e9e3d8'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23bd985c'/%3E%3Cpath d='M20 112c2-22 18-36 40-36s38 14 40 36' fill='%23bd985c'/%3E%3C/svg%3E">
+      <h1 id="current-display-name">Mon profil</h1>
+      <div class="profile-stats" aria-label="Statistiques du profil">
+        <button type="button" data-network-view="followers"><strong id="followers-count">0</strong><span>abonnés</span></button>
+        <button type="button" data-network-view="following"><strong id="following-count">0</strong><span>abonnements</span></button>
+      </div>
+      <p class="profile-header-intro">Votre profil, vos idées et vos publications réunis au même endroit.</p>
+    </div>
   </header>
   <main>
     <div class="account-container" id="account-panel" hidden>
-      <div class="account-summary">
-        <div class="account-summary-name"><span class="status-dot" aria-hidden="true"></span><strong id="current-display-name">Mon profil</strong></div>
-        <div class="profile-stats" aria-label="Statistiques du profil">
-          <button type="button" data-network-view="followers"><strong id="followers-count">0</strong><span>abonnés</span></button>
-          <button type="button" data-network-view="following"><strong id="following-count">0</strong><span>abonnements</span></button>
-        </div>
-      </div>
       <nav class="account-menu" aria-label="Menu du compte">
         <button type="button" data-open-view="home" aria-current="page">Mon espace</button>
         <button type="button" data-open-view="posts">Mes publications</button>
@@ -42,7 +45,6 @@
         <h2>Mon profil public</h2>
         <p class="section-intro">Présentez-vous à la communauté Daxy’s World.</p>
         <div class="avatar-row">
-          <img id="avatar-preview" class="avatar-preview" alt="Photo de profil par défaut" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23e9e3d8'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23bd985c'/%3E%3Cpath d='M20 112c2-22 18-36 40-36s38 14 40 36' fill='%23bd985c'/%3E%3C/svg%3E">
           <div><label for="avatar-file">Photo de profil</label>
             <input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
             <p class="hint">JPG, PNG ou WebP, 5 Mo maximum. Votre photo et votre profil seront visibles publiquement.</p>
@@ -120,6 +122,6 @@
     <div class="account-container" id="loading-panel"><p>Vérification de votre session…</p></div>
   </main>
   <footer><p>&copy; 2025 Daxy's World - Tous droits réservés.</p></footer>
-  <script type="module" src="compte.js?v=network-directory-responsive-20261008"></script>
+  <script type="module" src="compte.js?v=hero-profile-20261008"></script>
 </body>
 </html>
