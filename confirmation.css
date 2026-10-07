@@ -1,0 +1,59 @@
+.header, .hero {
+  text-align: center;
+  padding: 2em;
+  background-color: #4CAF50;
+  color: white;
+}
+/* Animation d'introduction */
+#introText {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+      transform: translateY(-50px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+.confirmation-section {
+    background-color: gray; /* Couleur douce pour la confirmation */
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    border: 1px solid #d4ffd4;
+    border-radius: 10px;
+  }
+  
+  .confirmation-section h2 {
+    color: #34a853; /* Vert de réussite */
+  }
+  
+  .confirmation-section p {
+    font-size: 1.2em;
+    margin: 15px 0;
+  }
+  
+  .cta-button {
+    background: #34a853;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .cta-button:hover {
+    background: #2c8b44;
+  }
+  footer {
+    text-align: center;
+    padding: 1em;
+    background: #333;
+    color: white;
+  }

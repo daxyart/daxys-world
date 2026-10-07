@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forums de Discussion</title>
+    <link rel="stylesheet" href="forum.css">
+    <script defer src="forum.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Forums de Discussion</h1>
+    </header>
+    <main>
+        <div id="categories-container">
+            <button class="category-button" data-category="design">Design et Création</button>
+            <button class="category-button" data-category="tech">Innovation Technologique</button>
+            <button class="category-button" data-category="community">Projets Communautaires</button>
+        </div>    
+        <div id="chat-container">
+            <p>Démo locale : les messages ne sont visibles que dans cette page et ne sont pas enregistrés.</p>
+            <ul id="messages"></ul>
+            <input type="text" id="message-input" placeholder="Tapez votre message ici...">
+            <button id="send-button">Envoyer</button>
+        </div>
+    </main>
+    <a href="index.html" class="back-button">Retour à l'accueil</a>
+</body>
+<footer>
+    <p>&copy; 2025 Daxy's World - Tous droits réservés.</p>
+</footer>
+</html>

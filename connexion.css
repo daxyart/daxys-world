@@ -1,0 +1,131 @@
+.header, .hero {
+    text-align: center;
+    padding: 2em;
+    background-color: #4CAF50;
+    color: white;
+}
+/* Animation d'introduction */
+#introText {
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Styles globaux */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9; /* Fond doux */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Conteneur principal */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+}
+
+/* Conteneur de connexion */
+.login-container {
+    background-color: #fff; /* Fond blanc du formulaire */
+    padding: 2em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    border-radius: 8px; /* Bords arrondis */
+    width: 100%;
+    max-width: 400px; /* Largeur maximale */
+    text-align: center;
+}
+
+/* Titres */
+h2 {
+    color: #333;
+    margin-bottom: 1em;
+}
+
+/* Styles des étiquettes et champs */
+label {
+    display: block;
+    margin: 0.5em 0 0.2em;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 0.8em;
+    margin-bottom: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+/* Bouton de connexion */
+button {
+    background-color: #007BFF; /* Bleu élégant */
+    color: white;
+    border: none;
+    padding: 0.8em 1.2em;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Variation au survol */
+}
+
+/* Message d'erreur ou de succès */
+p#message {
+    margin-top: 1em;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1em;
+    background-color: green;
+    color: white;
+}
+.cta-button {
+    background: rgb(238, 234, 234);
+    color: #ff758c;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  .cta-button:hover {
+    background: #ff758c;
+    color: rgb(217, 199, 199);
+  }
+.cta-accueil {
+    background: rgb(91, 87, 87);
+    color: #ff758c;
+    padding: 5px 10px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  .cta-accueil:hover {
+    background: #ff758c;
+    color: rgb(214, 168, 168);
+  }

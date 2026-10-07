@@ -1,0 +1,289 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.header, .hero {
+    text-align: center;
+    padding: 2em;
+    background-color: #4CAF50;
+    color: white;
+}
+/* Animation d'introduction */
+#introText {
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet survol sur les liens de la navbar */
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s;
+}
+
+.navbar a:hover {
+    color: #4CAF50;
+}
+
+/* Effets d'images dynamiques dans la galerie */
+.gallery img:hover {
+    transform: scale(1.2);
+    transition: transform 0.5s;
+}
+
+/* Ajout d'une transition douce pour le site */
+body {
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    background: #333;
+    padding: 1em 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 2em;
+}
+
+.gallery {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.gallery img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+
+#blog {
+    margin: 2em 0;
+}
+
+#blog h2 {
+    text-align: center;
+    color: #4CAF50;
+}
+
+#blog article {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#blog a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#blog a:hover {
+    text-decoration: underline;
+}
+
+/* Témoignages */
+#testimonials {
+    margin: 2em 0;
+    text-align: center;
+}
+
+#testimonials .testimonial {
+    margin: 10px auto;
+    padding: 15px;
+    max-width: 500px;
+    background: #f4f4f4;
+    border-radius: 5px;
+    font-style: italic;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#testimonials span {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Événements */
+#events ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#events li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#events li strong {
+    color: #4CAF50;
+}
+#team {
+    text-align: center;
+    margin: 2em 0;
+}
+
+.team-member {
+    display: inline-block;
+    margin: 10px;
+    text-align: center;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.team-member h3 {
+    color: #4CAF50;
+    margin-top: 10px;
+}
+
+.team-member p {
+    font-style: italic;
+}
+details {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+details summary {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+details p {
+    margin-top: 10px;
+}
+#partners {
+    text-align: center;
+    margin: 2em 0;
+}
+
+.partner {
+    display: inline-block;
+    margin: 10px;
+    text-align: center;
+}
+
+.partner img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10%;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.partner p {
+    font-weight: bold;
+    margin-top: 5px;
+}
+.cta-button {
+    background: rgb(238, 234, 234);
+    color: #ff758c;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .cta-button:hover {
+    background: #ff758c;
+    color: rgb(217, 199, 199);
+  }
+  
+  .about-us, .features, .call-to-action {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  ul li {
+    margin: 10px 0;
+    font-size: 1.1em;
+  }
+.daxy {
+    text-align: center;
+    margin: 2em 0;
+}
+.contact {
+    text-align: center;
+    margin: 2em 0;
+}
+main {
+    background: linear-gradient(to bottom right, #ffefba, #ffffff); /* Dégradé doux */
+    padding: 2em;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+}
+
+section {
+    background: rgba(255, 255, 255, 0.9); /* Fond blanc translucide */
+    margin-bottom: 2em;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Texte harmonieux */
+h2 {
+    color: #004d99; /* Bleu doux */
+    font-family: 'Georgia', serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+p, li {
+    color: #333333; /* Texte gris foncé */
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+footer {
+    text-align: center;
+    padding: 1em;
+    background: green;
+    color: white;
+}
