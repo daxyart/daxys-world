@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forums de Discussion</title>
     <link rel="stylesheet" href="forum.css">
-    <script defer src="forum.js"></script>
+    <script type="module" src="forum.js?v=persisted-forum-20261008"></script>
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="elegant-theme-v2.css">
 </head>
@@ -20,10 +20,14 @@
             <button class="category-button" data-category="community">Projets Communautaires</button>
         </div>    
         <div id="chat-container">
-            <p>Démo locale : les messages ne sont visibles que dans cette page et ne sont pas enregistrés.</p>
+            <p id="forum-status" role="status" aria-live="polite">Chargement des échanges…</p>
             <ul id="messages"></ul>
-            <input type="text" id="message-input" placeholder="Tapez votre message ici...">
-            <button id="send-button">Envoyer</button>
+            <form id="forum-form">
+              <label for="message-input">Votre message</label>
+              <textarea id="message-input" maxlength="1000" rows="3" placeholder="Tapez votre message ici…" required></textarea>
+              <button id="send-button" type="submit">Envoyer</button>
+            </form>
+            <a href="connexion.html" id="forum-login-link">Connectez-vous pour participer</a>
         </div>
     </main>
     <a href="index.html" class="back-button">Retour à l'accueil</a>

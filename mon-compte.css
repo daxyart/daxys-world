@@ -36,7 +36,11 @@ body {
 .hero-copy::after { content: '✦'; position: absolute; top: .1rem; right: 4%; color: #d0ad6d; opacity: .62; font-size: 4rem; }
 .account-profile-header { display: grid; justify-items: center; gap: .7rem; text-align: center; }
 .account-profile-header .eyebrow { margin-bottom: 0; }
-.profile-header-avatar { width: 112px; height: 112px; border: 3px solid #d7bd83; border-radius: 50%; object-fit: cover; background: #e9e3d8; box-shadow: 0 10px 28px #050a1466, 0 0 0 6px #ffffff10; }
+.profile-avatar-wrap { position: relative; width: 112px; height: 112px; }
+.profile-header-avatar { display: block; width: 112px; height: 112px; border: 3px solid #d7bd83; border-radius: 50%; object-fit: cover; background: #e9e3d8; box-shadow: 0 10px 28px #050a1466, 0 0 0 6px #ffffff10; }
+.avatar-fab { position: absolute; right: -3px; bottom: 1px; display: grid; width: 38px; height: 38px; place-items: center; margin: 0; padding: .55rem; border: 2px solid #fffdf8; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #bd985c, #8c6b36); box-shadow: 0 5px 14px #050a1455; cursor: pointer; }
+.avatar-fab svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.avatar-fab:hover { transform: scale(1.06); }
 .account-profile-header h1 { max-width: min(100%, 900px); margin: 0; overflow-wrap: anywhere; font-size: clamp(2.3rem, 5vw, 3.8rem); }
 .account-profile-header .profile-stats { justify-content: center; flex-wrap: wrap; gap: .45rem; margin-top: -.1rem; }
 .account-profile-header .profile-stats button { color: #f7f2e9 !important; background: #ffffff12 !important; border: 1px solid #d3b67666 !important; box-shadow: none !important; }
@@ -68,6 +72,9 @@ main { flex: 1; width: min(100% - 2rem, 1120px); margin: -1.45rem auto 4rem; pos
 #account-panel[hidden] { display: none !important; }
 .section-kicker { margin-bottom: .35rem; color: var(--gold-dark); font-size: .63rem; letter-spacing: .16em; }
 .account-section h2 { margin: 0; color: var(--ink); font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 600; letter-spacing: -.015em; }
+.account-section h3 { margin: 1rem 0 .3rem; color: var(--ink); font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; }
+.account-divider { height: 1px; margin: 1.5rem 0; border: 0; background: var(--line); }
+.personal-info-grid { display: grid; grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); gap: .8rem; }
 .section-intro { margin: .35rem 0 1.2rem; color: var(--muted); font-size: .91rem; line-height: 1.5; }
 label, summary { display: block; margin: .9rem 0 .4rem; color: #344052; font-size: .85rem; font-weight: 700; }
 input, textarea { width: 100%; padding: .82rem .9rem; border: 1px solid #d8d6d0; border-radius: 9px; outline: none; color: var(--ink); background: #fff; font: inherit; font-size: .94rem; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
@@ -125,6 +132,18 @@ button:disabled { opacity: .55; cursor: wait; transform: none; }
 .account-security[open] .summary-mark { transform: rotate(45deg); }
 .account-security form { padding-bottom: .5rem; }
 .account-security form + .hint { padding-bottom: .9rem; }
+.delete-account-panel { margin: 1.25rem 0 1.35rem; padding: 1.1rem; border: 1px solid #ead1cf; border-radius: 12px; background: #fff9f8; }
+.delete-account-panel h3 { margin-top: 0; color: #873d46; }
+.delete-account-panel p { color: #745b5d; font-size: .88rem; line-height: 1.55; }
+.delete-account-button { border-color: #a84d56; color: #fff; background: linear-gradient(135deg, #9b434e, #77313d); }
+.delete-account-button:hover { background: linear-gradient(135deg, #ad525d, #843b47); }
+.delete-account-dialog { width: min(92vw, 480px); padding: 1.5rem; border: 1px solid #e5ddcf; border-radius: 16px; color: var(--ink); background: #fffdf8; box-shadow: 0 24px 80px #10172766; }
+.delete-account-dialog::backdrop { background: #101727a6; backdrop-filter: blur(3px); }
+.delete-account-dialog h2 { margin-top: 0; font-family: 'Playfair Display', Georgia, serif; }
+.dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+.dialog-actions button { margin-top: .2rem; }
+#delete-account-error { min-height: 1.2em; color: #a43846; font-size: .85rem; }
+.secondary-button { border-color: #d6d3cb; color: #4b5564; background: #fff; box-shadow: none; }
 #loading-panel { max-width: 500px; margin: 3rem auto; color: #eef0f4; border-color: #ffffff28; background: #ffffff0c; box-shadow: none; text-align: center; }
 footer { padding: 1.4rem 1rem; color: #aeb7c4; text-align: center; font-size: .82rem; }
 footer p { margin: 0; }
@@ -149,7 +168,9 @@ footer p { margin: 0; }
   .account-menu { position: static; }
   .account-summary { align-items: flex-start; }
   .profile-stats { width: 100%; justify-content: space-between; }
-  .profile-header-avatar { width: 92px; height: 92px; }
+  .profile-avatar-wrap, .profile-header-avatar { width: 92px; height: 92px; }
+  .avatar-fab { width: 35px; height: 35px; }
+  .personal-info-grid { grid-template-columns: 1fr; gap: 0; }
   .account-profile-header { margin-top: 2rem; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

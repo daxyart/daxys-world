@@ -170,6 +170,7 @@ function renderPost(post, profile, canDelete = false) {
 }
 
 let currentUser;
+let existingAvatar = "";
 async function loadMyPosts(userId) {
   const host = document.querySelector("#my-posts");
   host.replaceChildren();
@@ -320,16 +321,42 @@ if (sessionError || !session) {
   document.querySelector("#current-display-name").textContent = initialDisplayName;
   avatarPreview.alt = `Photo de profil de ${initialDisplayName}`;
   document.querySelector("#profile-bio").value = profile?.bio ?? "";
-  const existingAvatar = profile?.avatar_url ?? currentUser.user_metadata?.avatar_url ?? "";
+  existingAvatar = profile?.avatar_url ?? currentUser.user_metadata?.avatar_url ?? "";
   if (existingAvatar) avatarPreview.src = existingAvatar;
 
-  document.querySelector("#avatar-file").addEventListener("change", (event) => {
+  const avatarFileInput = document.querySelector("#avatar-file");
+  document.querySelector("#change-avatar-button").addEventListener("click", () => avatarFileInput.click());
+  avatarFileInput.addEventListener("change", async (event) => {
     const file = event.currentTarget.files[0];
     const validation = validateImage(file);
     if (validation) {
       event.currentTarget.value = "";
       showMessage(validation, true);
-    } else if (file) avatarPreview.src = URL.createObjectURL(file);
+      return;
+    }
+    if (!file) return;
+    const button = document.querySelector("#change-avatar-button");
+    button.disabled = true;
+    try {
+      const previewUrl = URL.createObjectURL(file);
+      avatarPreview.src = previewUrl;
+      const avatarUrl = await uploadImage(currentUser.id, file, "avatar");
+      const displayName = document.querySelector("#display-name").value.trim() || "Membre";
+      const bio = document.querySelector("#profile-bio").value.trim();
+      const { error } = await supabase.from("profiles").upsert({ id: currentUser.id, display_name: displayName, bio, avatar_url: avatarUrl }, { onConflict: "id" });
+      if (error) throw error;
+      const { error: metadataError } = await supabase.auth.updateUser({ data: { avatar_url: avatarUrl } });
+      if (metadataError) throw metadataError;
+      existingAvatar = avatarUrl;
+      avatarPreview.src = avatarUrl;
+      showMessage("Votre photo de profil a été mise à jour.");
+    } catch (error) {
+      avatarPreview.src = existingAvatar || avatarPreview.src;
+      showMessage("La photo n’a pas pu être enregistrée. Vérifiez le stockage Supabase puis réessayez.", true);
+    } finally {
+      button.disabled = false;
+      avatarFileInput.value = "";
+    }
   });
 
   document.querySelector("#profile-form").addEventListener("submit", async (event) => {
@@ -337,25 +364,37 @@ if (sessionError || !session) {
     const button = event.currentTarget.querySelector("button[type=submit]");
     const displayName = document.querySelector("#display-name").value.trim();
     const bio = document.querySelector("#profile-bio").value.trim();
-    const avatarFile = document.querySelector("#avatar-file").files[0];
-    const validation = validateImage(avatarFile);
-    if (validation) return showMessage(validation, true);
     button.disabled = true;
     try {
-      const avatarUrl = avatarFile ? await uploadImage(currentUser.id, avatarFile, "avatar") : existingAvatar;
-      const { error } = await supabase.from("profiles").upsert({ id: currentUser.id, display_name: displayName, bio, avatar_url: avatarUrl }, { onConflict: "id" });
+      const { error } = await supabase.from("profiles").upsert({ id: currentUser.id, display_name: displayName, bio, avatar_url: existingAvatar || null }, { onConflict: "id" });
       if (error) throw error;
-      const { error: metadataError } = await supabase.auth.updateUser({ data: { display_name: displayName, bio, avatar_url: avatarUrl } });
+      const { error: metadataError } = await supabase.auth.updateUser({ data: { display_name: displayName, bio, avatar_url: existingAvatar || null } });
       if (metadataError) throw metadataError;
       document.querySelector("#current-display-name").textContent = displayName || "Mon profil";
       avatarPreview.alt = `Photo de profil de ${displayName || "Mon profil"}`;
       showMessage("Votre profil a été mis à jour.");
-      if (avatarUrl) avatarPreview.src = avatarUrl;
-      document.querySelector("#avatar-file").value = "";
       await loadMyPosts(currentUser.id);
     } catch (error) {
       showMessage(error.message?.includes("profiles") ? "La configuration Supabase des profils n’est pas encore activée." : "La mise à jour du profil a échoué. Réessayez.", true);
     } finally { button.disabled = false; }
+  });
+
+  const privateProfileForm = document.querySelector("#private-profile-form");
+  const privateFields = ["phone", "address_line1", "address_line2", "postal_code", "city", "country"];
+  const { data: privateProfile, error: privateProfileError } = await supabase.from("private_profiles").select(privateFields.join(",")).eq("id", currentUser.id).maybeSingle();
+  if (privateProfileError) showMessage("Les informations privées nécessitent la migration Supabase prévue pour cette fonction.", true);
+  for (const field of privateFields) {
+    const input = privateProfileForm.elements.namedItem(field);
+    if (input) input.value = privateProfile?.[field] ?? "";
+  }
+  privateProfileForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector("button[type=submit]");
+    const details = Object.fromEntries(privateFields.map((field) => [field, String(privateProfileForm.elements.namedItem(field).value).trim()]));
+    button.disabled = true;
+    const { error } = await supabase.from("private_profiles").upsert({ id: currentUser.id, ...details }, { onConflict: "id" });
+    button.disabled = false;
+    showMessage(error ? "L’enregistrement a échoué. Vérifiez que la configuration Supabase des informations privées est activée." : "Vos informations personnelles privées ont été enregistrées.", Boolean(error));
   });
 
   document.querySelector("#post-form").addEventListener("submit", async (event) => {
@@ -409,6 +448,27 @@ if (sessionError || !session) {
     const { error } = await supabase.auth.signOut();
     if (error) { event.currentTarget.disabled = false; showMessage("La déconnexion a échoué. Réessayez.", true); }
     else window.location.replace("connexion.html");
+  });
+
+  const deleteDialog = document.querySelector("#delete-account-dialog");
+  const deleteConfirmation = document.querySelector("#delete-account-confirmation");
+  const deleteSubmit = document.querySelector("#confirm-delete-account");
+  document.querySelector("#open-delete-account").addEventListener("click", () => deleteDialog.showModal());
+  document.querySelector("#cancel-delete-account").addEventListener("click", () => deleteDialog.close());
+  deleteConfirmation.addEventListener("input", () => { deleteSubmit.disabled = deleteConfirmation.value !== "SUPPRIMER"; });
+  document.querySelector("#delete-account-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (deleteConfirmation.value !== "SUPPRIMER") return;
+    deleteSubmit.disabled = true;
+    document.querySelector("#delete-account-error").textContent = "Suppression en cours…";
+    const { error } = await supabase.functions.invoke("delete-account", { body: { confirmation: "SUPPRIMER" } });
+    if (error) {
+      document.querySelector("#delete-account-error").textContent = "La suppression n’est pas disponible pour le moment. Réessayez plus tard ou contactez l’administrateur du site.";
+      deleteSubmit.disabled = false;
+      return;
+    }
+    await supabase.auth.signOut();
+    window.location.replace("index.html?account=deleted");
   });
 
   await loadMyPosts(currentUser.id);

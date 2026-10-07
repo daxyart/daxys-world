@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Gérez votre profil et vos publications sur Daxy's World.">
   <title>Mon compte — Daxy's World</title>
-  <link rel="stylesheet" href="mon-compte.css?v=hero-profile-20261008b">
+  <link rel="stylesheet" href="mon-compte.css?v=account-features-20261008">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="elegant-theme-v2.css">
 </head>
@@ -22,7 +22,13 @@
     </div>
     <div class="hero-copy account-profile-header" id="account-profile-header" hidden>
       <p class="eyebrow">ESPACE MEMBRE</p>
-      <img id="avatar-preview" class="profile-header-avatar" alt="Photo de profil" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23e9e3d8'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23bd985c'/%3E%3Cpath d='M20 112c2-22 18-36 40-36s38 14 40 36' fill='%23bd985c'/%3E%3C/svg%3E">
+      <div class="profile-avatar-wrap">
+        <img id="avatar-preview" class="profile-header-avatar" alt="Photo de profil" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23e9e3d8'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23bd985c'/%3E%3Cpath d='M20 112c2-22 18-36 40-36s38 14 40 36' fill='%23bd985c'/%3E%3C/svg%3E">
+        <button type="button" id="change-avatar-button" class="avatar-fab" aria-label="Modifier la photo de profil" title="Modifier la photo de profil">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.4-2h7.2l1.4 2h3A1.5 1.5 0 0 1 21.5 9v9a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 18V9A1.5 1.5 0 0 1 4 7.5Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        </button>
+        <input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      </div>
       <h1 id="current-display-name">Mon profil</h1>
       <div class="profile-stats" aria-label="Statistiques du profil">
         <button type="button" data-network-view="followers"><strong id="followers-count">0</strong><span>abonnés</span></button>
@@ -44,18 +50,27 @@
         <p class="section-kicker">01 / IDENTITÉ</p>
         <h2>Mon profil public</h2>
         <p class="section-intro">Présentez-vous à la communauté Daxy’s World.</p>
-        <div class="avatar-row">
-          <div><label for="avatar-file">Photo de profil</label>
-            <input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
-            <p class="hint">JPG, PNG ou WebP, 5 Mo maximum. Votre photo et votre profil seront visibles publiquement.</p>
-          </div>
-        </div>
+        <p class="hint">Votre nom et votre présentation sont visibles par les autres membres. La photo se modifie avec le bouton sur votre portrait.</p>
         <form id="profile-form">
           <label for="display-name">Nom affiché</label>
           <input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" required>
           <label for="profile-bio">Présentation</label>
           <textarea id="profile-bio" name="bio" maxlength="300" rows="3" placeholder="Quelques mots sur vous…"></textarea>
           <button type="submit">Enregistrer mon profil</button>
+        </form>
+        <hr class="account-divider">
+        <h3>Informations personnelles</h3>
+        <p class="hint">Ces informations restent privées et ne sont visibles que par vous.</p>
+        <form id="private-profile-form" class="personal-info-form">
+          <label for="private-phone">Téléphone</label><input id="private-phone" name="phone" type="tel" autocomplete="tel" maxlength="40">
+          <label for="private-address1">Adresse</label><input id="private-address1" name="address_line1" type="text" autocomplete="address-line1" maxlength="160">
+          <label for="private-address2">Complément d’adresse</label><input id="private-address2" name="address_line2" type="text" autocomplete="address-line2" maxlength="160">
+          <div class="personal-info-grid">
+            <div><label for="private-postal-code">Code postal</label><input id="private-postal-code" name="postal_code" type="text" autocomplete="postal-code" maxlength="20"></div>
+            <div><label for="private-city">Ville</label><input id="private-city" name="city" type="text" autocomplete="address-level2" maxlength="100"></div>
+          </div>
+          <label for="private-country">Pays</label><input id="private-country" name="country" type="text" autocomplete="country-name" maxlength="100">
+          <button type="submit">Enregistrer mes informations privées</button>
         </form>
       </section>
 
@@ -111,6 +126,21 @@
           <input id="confirm-password" name="password-confirm" type="password" minlength="8" autocomplete="new-password" required>
           <button type="submit">Modifier mon mot de passe</button>
         </form>
+        <section class="delete-account-panel" aria-labelledby="delete-account-title">
+          <h3 id="delete-account-title">Supprimer mon compte</h3>
+          <p>Cette action effacera votre profil, vos publications, vos abonnements, vos informations privées et vos images. Elle est définitive.</p>
+          <button type="button" id="open-delete-account" class="delete-account-button">Supprimer mon compte</button>
+          <dialog id="delete-account-dialog" class="delete-account-dialog">
+            <form method="dialog" id="delete-account-form">
+              <h2>Confirmer la suppression</h2>
+              <p>Pour continuer, saisissez <strong>SUPPRIMER</strong>. Votre compte et ses données seront effacés définitivement.</p>
+              <label for="delete-account-confirmation">Confirmation</label>
+              <input id="delete-account-confirmation" autocomplete="off" required>
+              <div class="dialog-actions"><button type="button" id="cancel-delete-account" class="secondary-button">Annuler</button><button type="submit" id="confirm-delete-account" class="delete-account-button" disabled>Effacer définitivement</button></div>
+              <p id="delete-account-error" role="alert" aria-live="polite"></p>
+            </form>
+          </dialog>
+        </section>
       </details>
 
       <p id="account-message" role="status" aria-live="polite"></p>
@@ -122,6 +152,6 @@
     <div class="account-container" id="loading-panel"><p>Vérification de votre session…</p></div>
   </main>
   <footer><p>&copy; 2025 Daxy's World - Tous droits réservés.</p></footer>
-  <script type="module" src="compte.js?v=hero-profile-20261008"></script>
+  <script type="module" src="compte.js?v=account-features-20261008"></script>
 </body>
 </html>
