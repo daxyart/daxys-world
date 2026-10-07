@@ -59,7 +59,11 @@ if (!clientConfigured) {
       password: String(form.get("password"))
     });
     button.disabled = false;
-    if (error) showMessage("Connexion impossible. Vérifie ton e-mail, ton mot de passe et la confirmation de ton adresse.", true);
+    if (error) {
+      showMessage("Connexion impossible. Vérifie ton e-mail, ton mot de passe et la confirmation de ton adresse.", true);
+    } else {
+      window.location.href = "mon-compte.html";
+    }
   });
 
   logoutButton?.addEventListener("click", async () => {
@@ -70,5 +74,7 @@ if (!clientConfigured) {
   supabase.auth.onAuthStateChange((_event, session) => {
     if (accountStatus) accountStatus.textContent = session?.user?.email ? "Connecté en tant que " + session.user.email : "";
     if (logoutButton) logoutButton.hidden = !session;
+    const accountLink = document.querySelector("#account-link");
+    if (accountLink) accountLink.hidden = !session;
   });
 }
