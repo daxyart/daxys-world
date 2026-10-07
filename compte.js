@@ -348,7 +348,8 @@ if (sessionError || !session) {
 
   document.querySelector("#post-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const button = event.currentTarget.querySelector("button[type=submit]");
+    const form = event.currentTarget;
+    const button = form.querySelector("button[type=submit]");
     const body = document.querySelector("#post-body").value.trim();
     const file = document.querySelector("#post-image").files[0];
     const validation = validateImage(file);
@@ -360,7 +361,7 @@ if (sessionError || !session) {
       const imageUrl = file ? await uploadImage(currentUser.id, file, "post", visibility === "private" ? PRIVATE_BUCKET : BUCKET) : null;
       const { error } = await supabase.from("posts").insert({ author_id: currentUser.id, body, image_url: imageUrl, visibility });
       if (error) throw error;
-      event.currentTarget.reset();
+      form.reset();
       showMessage("Votre publication est en ligne.");
       await loadMyPosts(currentUser.id);
     } catch (error) {
