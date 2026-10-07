@@ -3,36 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gérez votre profil et vos publications sur Daxy's World.">
   <title>Mon compte — Daxy's World</title>
   <link rel="stylesheet" href="compte.css">
 </head>
 <body>
   <header class="hero">
     <h1>Mon compte</h1>
-    <p>Gérez votre profil et vos informations de connexion.</p>
+    <p>Personnalisez votre profil et partagez vos publications avec la communauté.</p>
   </header>
   <main>
     <div class="account-container" id="account-panel" hidden>
       <p class="account-email">Connecté avec <strong id="current-email"></strong></p>
+
       <section class="account-section">
-        <h2>Mon profil</h2>
+        <h2>Mon profil public</h2>
+        <div class="avatar-row">
+          <img id="avatar-preview" class="avatar-preview" alt="Aperçu de votre photo de profil" src="">
+          <div><label for="avatar-file">Photo de profil</label>
+            <input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp">
+            <p class="hint">JPG, PNG ou WebP, 5 Mo maximum. Votre photo et votre profil seront visibles publiquement.</p>
+          </div>
+        </div>
         <form id="profile-form">
           <label for="display-name">Nom affiché</label>
           <input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" required>
+          <label for="profile-bio">Présentation</label>
+          <textarea id="profile-bio" name="bio" maxlength="300" rows="3" placeholder="Quelques mots sur vous…"></textarea>
           <button type="submit">Enregistrer mon profil</button>
         </form>
       </section>
+
       <section class="account-section">
-        <h2>Adresse e-mail</h2>
+        <h2>Publier</h2>
+        <form id="post-form">
+          <label for="post-body">Votre texte</label>
+          <textarea id="post-body" maxlength="1000" rows="5" placeholder="Que souhaitez-vous partager ?" aria-describedby="post-hint"></textarea>
+          <label for="post-image">Ajouter une image (facultatif)</label>
+          <input id="post-image" type="file" accept="image/png,image/jpeg,image/webp">
+          <p class="hint" id="post-hint">Texte jusqu’à 1 000 caractères et une image de 5 Mo maximum. Les publications sont visibles par tous.</p>
+          <button type="submit">Publier</button>
+        </form>
+      </section>
+
+      <section class="account-section">
+        <h2>Mes publications</h2>
+        <div id="my-posts" class="post-list" aria-live="polite"></div>
+        <a class="text-link" href="publications.html">Voir toutes les publications</a>
+      </section>
+
+      <details class="account-section account-security">
+        <summary>Connexion et sécurité</summary>
         <form id="email-form">
           <label for="new-email">Nouvelle adresse e-mail</label>
           <input id="new-email" name="email" type="email" autocomplete="email" required>
           <button type="submit">Modifier mon adresse</button>
         </form>
         <p class="hint">Un lien de confirmation sera envoyé à la nouvelle adresse.</p>
-      </section>
-      <section class="account-section">
-        <h2>Mot de passe</h2>
         <form id="password-form">
           <label for="new-password">Nouveau mot de passe (au moins 8 caractères)</label>
           <input id="new-password" name="password" type="password" minlength="8" autocomplete="new-password" required>
@@ -40,7 +67,8 @@
           <input id="confirm-password" name="password-confirm" type="password" minlength="8" autocomplete="new-password" required>
           <button type="submit">Modifier mon mot de passe</button>
         </form>
-      </section>
+      </details>
+
       <p id="account-message" role="status" aria-live="polite"></p>
       <div class="account-actions">
         <a href="index.html">Retour à l'accueil</a>
