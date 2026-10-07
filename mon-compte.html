@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon compte — Daxy's World</title>
+  <link rel="stylesheet" href="compte.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>Mon compte</h1>
+    <p>Gérez votre profil et vos informations de connexion.</p>
+  </header>
+  <main>
+    <div class="account-container" id="account-panel" hidden>
+      <p class="account-email">Connecté avec <strong id="current-email"></strong></p>
+      <section class="account-section">
+        <h2>Mon profil</h2>
+        <form id="profile-form">
+          <label for="display-name">Nom affiché</label>
+          <input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" required>
+          <button type="submit">Enregistrer mon profil</button>
+        </form>
+      </section>
+      <section class="account-section">
+        <h2>Adresse e-mail</h2>
+        <form id="email-form">
+          <label for="new-email">Nouvelle adresse e-mail</label>
+          <input id="new-email" name="email" type="email" autocomplete="email" required>
+          <button type="submit">Modifier mon adresse</button>
+        </form>
+        <p class="hint">Un lien de confirmation sera envoyé à la nouvelle adresse.</p>
+      </section>
+      <section class="account-section">
+        <h2>Mot de passe</h2>
+        <form id="password-form">
+          <label for="new-password">Nouveau mot de passe (au moins 8 caractères)</label>
+          <input id="new-password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+          <label for="confirm-password">Confirmer le nouveau mot de passe</label>
+          <input id="confirm-password" name="password-confirm" type="password" minlength="8" autocomplete="new-password" required>
+          <button type="submit">Modifier mon mot de passe</button>
+        </form>
+      </section>
+      <p id="account-message" role="status" aria-live="polite"></p>
+      <div class="account-actions">
+        <a href="index.html">Retour à l'accueil</a>
+        <button id="signout-button" type="button" class="secondary-button">Se déconnecter</button>
+      </div>
+    </div>
+    <div class="account-container" id="loading-panel"><p>Vérification de votre session…</p></div>
+  </main>
+  <footer><p>&copy; 2025 Daxy's World - Tous droits réservés.</p></footer>
+  <script type="module" src="compte.js"></script>
+</body>
+</html>
