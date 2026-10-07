@@ -129,3 +129,44 @@ footer {
     background: #ff758c;
     color: rgb(214, 168, 168);
   }
+
+/* Actions de la page de connexion : alignement régulier et lisible */
+body .login-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: min(100% - 2rem, 1100px);
+  margin: 0 auto 1rem;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+body .login-container #login-form button {
+  display: block;
+  width: min(100%, 220px);
+  min-height: 48px;
+  margin: 1.25rem auto 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+body .login-container .login-signup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 1.25rem 0 0;
+  text-align: center;
+}
+
+body .login-container .login-signup .cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  box-sizing: border-box;
+  line-height: 1.2;
+  white-space: nowrap;
+}
