@@ -53,6 +53,7 @@ main { flex: 1; width: min(100% - 2rem, 1120px); margin: -1.45rem auto 4rem; pos
 .account-menu button:hover, .account-menu button[aria-current="page"] { color: #172334; background: #f3ecdf; }
 #account-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 1rem; }
 .account-section { min-width: 0; padding: 1.45rem; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: 0 5px 16px #2d35410a; }
+.account-section[id="account-network"] { scroll-margin-top: 6rem; }
 .account-section:nth-of-type(1), .account-security, #account-message, .account-actions { grid-column: 1 / -1; }
 .section-kicker { margin-bottom: .35rem; color: var(--gold-dark); font-size: .63rem; letter-spacing: .16em; }
 .account-section h2 { margin: 0; color: var(--ink); font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 600; letter-spacing: -.015em; }

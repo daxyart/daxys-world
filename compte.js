@@ -195,7 +195,10 @@ function showAccountView(view) {
   });
   if (view === "security") document.querySelector("#account-security").open = true;
   if (view === "posts" && currentUser) loadMyPosts(currentUser.id);
-  if (view === "network" && currentUser) loadMyNetwork(currentUser.id, activeNetworkView);
+  if (view === "network" && currentUser) {
+    loadMyNetwork(currentUser.id, activeNetworkView);
+    document.querySelector("#account-network").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 document.querySelectorAll("[data-open-view]").forEach((button) => {
@@ -270,8 +273,10 @@ async function loadNetworkStats(userId) {
 document.querySelectorAll("[data-network-view]").forEach((button) => {
   button.addEventListener("click", () => {
     if (currentUser) {
-      if (!button.matches('[role="tab"]')) showAccountView("network");
-      loadMyNetwork(currentUser.id, button.dataset.networkView);
+      if (!button.matches('[role="tab"]')) {
+        activeNetworkView = button.dataset.networkView;
+        showAccountView("network");
+      } else loadMyNetwork(currentUser.id, button.dataset.networkView);
     }
   });
 });
