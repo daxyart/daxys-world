@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daxy's World</title>
-    <link rel="stylesheet" href="connexion.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Daxy's World</title>
+  <link rel="stylesheet" href="connexion.css">
 </head>
 <body>
-    <header class="hero">
-        <h1 id="introText">Bienvenue dans Daxy's World</h1>
-        <p>Explorez un monde d'interactions et de créativité.</p>
-    </header>
-    <section>
-        <a href="index.html" class="cta-accueil">Accueil</a>
-    </section>
-    <main>
+  <header class="hero">
+    <h1>Bienvenue dans Daxy's World</h1>
+    <p>Explorez un monde d'interactions et de créativité.</p>
+  </header>
+  <section><a href="index.html" class="cta-accueil">Accueil</a></section>
+  <main>
     <div class="login-container">
-        <h2>Connectez-vous</h2>
-        <p>La connexion et la création de compte ne sont pas encore disponibles sur cette version du site.</p>
-        <p>Tu peux continuer à explorer les pages publiques du site.</p>
-        <a href="inscription.html" class="cta-button">À propos de l’inscription</a>
+      <h2>Connectez-vous</h2>
+      <form id="login-form">
+        <label for="login-email">Adresse e-mail</label>
+        <input id="login-email" name="email" type="email" autocomplete="email" required>
+        <label for="login-password">Mot de passe</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Se connecter</button>
+      </form>
+      <p id="auth-message" role="status" aria-live="polite"></p>
+      <p id="account-status"></p>
+      <button id="logout-button" type="button" hidden>Se déconnecter</button>
+      <p>Pas encore de compte ? <a href="inscription.html" class="cta-button">Créer un compte</a></p>
     </div>
-    </main>
-<footer>
-    <p>&copy; 2025 Daxy's World - Tous droits réservés.</p>
-</footer>
+  </main>
+  <footer><p>&copy; 2025 Daxy's World - Tous droits réservés.</p></footer>
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
