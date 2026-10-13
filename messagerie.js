@@ -31,3 +31,19 @@ reliableSendButton?.addEventListener('click', event => {
   event.preventDefault();
   reliableMessageForm?.requestSubmit();
 });
+// Keep send progress and Supabase errors visible next to the composer.
+const inlineSendFeedback = document.createElement('p');
+inlineSendFeedback.setAttribute('role', 'status');
+inlineSendFeedback.setAttribute('aria-live', 'polite');
+inlineSendFeedback.style.cssText = 'margin:8px 4px 0; min-height:1em; font-size:13px;';
+const activeMessageForm = document.getElementById('message-form');
+if (activeMessageForm && status) {
+  activeMessageForm.insertBefore(inlineSendFeedback, activeMessageForm.querySelector('.composer'));
+  const syncSendFeedback = () => {
+    inlineSendFeedback.textContent = status.textContent;
+    inlineSendFeedback.hidden = status.classList.contains('hidden') || !status.textContent.trim();
+    inlineSendFeedback.style.color = status.classList.contains('error') ? '#b42336' : '#256b45';
+  };
+  new MutationObserver(syncSendFeedback).observe(status, { childList: true, subtree: true, attributes: true, characterData: true });
+  syncSendFeedback();
+}
