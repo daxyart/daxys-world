@@ -29,5 +29,5 @@ const reliableSendButton = document.querySelector('.send-button');
 const reliableMessageForm = document.getElementById('message-form');
 reliableSendButton?.addEventListener('click', event => {
   event.preventDefault();
-  reliableMessageForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  reliableMessageForm?.requestSubmit();
 });
